@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Meme Maker😂</h2>
+    <input type="file" id="imageUpload" accept="image/*">
+    <br><br>
+    <canvas id="memeCanvas"></canvas>
+    <br>
+    <div class="controls">
+        <input type="text" id="topText" placeholder="Top Text">
+        <input type="text" id="bottomText" placeholder="Bottom Text">
+        <button onclick="generateMeme()">Generate Meme</button>
+        <button onclick="downloadMeme()">Download Meme</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("memeCanvas");
+        const ctx = canvas.getContext("2d");
+        let img = new Image();
+
+        document.getElementById("imageUpload").addEventListener("change", function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        img.onload = function() {
+            canvas.width = img.width / 2;
+            canvas.height = img.height / 2;
+            drawMeme();
+        };
+
+        function drawMeme() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.font = "30px Impact";
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 3;
+            ctx.textAlign = "center";
+            
+            const topText = document.getElementById("topText").value.toUpperCase();
+            const bottomText = document.getElementById("bottomText").value.toUpperCase();
+            
+            ctx.fillText(topText, canvas.width / 2, 40);
+            ctx.strokeText(topText, canvas.width / 2, 40);
+            ctx.fillText(bottomText, canvas.width / 2, canvas.height - 20);
+            ctx.strokeText(bottomText, canvas.width / 2, canvas.height - 20);
+        }
+
+        function generateMeme() {
+            drawMeme();
+        }
+
+        function downloadMeme() {
+            const link = document.createElement("a");
+            link.download = "meme.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    </script>
+</body>
+</html>
